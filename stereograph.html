@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stereograph Detail | Russo-Japanese War Stereograph Archive</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;700&family=Open+Sans&display=swap" rel="stylesheet">
+  <style>
+    #detail-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem 1.5rem;
+      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    #detail-container h1 {
+      color: #567794;
+      margin-top: 1rem;
+    }
+    .detail-img {
+      display: block;
+      margin: 1rem auto;
+      max-width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .no-image {
+      text-align: center;
+      margin: 1rem 0;
+      font-style: italic;
+    }
+    .no-image a {
+      color: #567794;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .no-image a:hover {
+      text-decoration: underline;
+    }
+    .nav-buttons {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    .nav-buttons a {
+      background: #567794;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .nav-buttons a:hover {
+      background: #3f5a6b;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-title">
+      <a href="index.html">Russo-Japanese War<br>Stereograph Archive</a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="archive.html" class="active">ARCHIVE</a></li>
+      <li><a href="publishers.html">PUBLISHERS</a></li>
+      <li><a href="about.html">ABOUT</a></li>
+      <li>
+        <form id="nav-search-form" class="nav-search">
+          <input type="text" placeholder="SEARCH…" name="q">
+        </form>
+      </li>
+    </ul>
+  </nav>
+
+  <main id="detail-container">
+    <h1>Loading stereograph...</h1>
+  </main>
+
+  <script>
+    // Make nav search redirect into archive.html with query
+    document.getElementById("nav-search-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const query = this.q.value.trim();
+      if (query) {
+        window.location.href = "archive.html?q=" + encodeURIComponent(query);
+      }
+    });
+
+    async function loadDetail() {
+      const params = new URLSearchParams(window.location.search);
+      const id = parseInt(params.get("id"), 10);
+
+      if (isNaN(id)) {
+        document.getElementById("detail-container").innerHTML = "<p>Invalid stereograph ID.</p>";
+        return;
+      }
+
+      try {
+        const response = await fetch("stereographs.json");
+        const data = await response.json();
+
+        if (id < 0 || id >= data.length) {
+          document.getElementById("detail-container").innerHTML = "<p>Stereograph not found.</p>";
+          return;
+        }
+
+        const item = data[id];
+        const imgHtml = item.image
+          ? `<img src="${item.image}" alt="${item.title}" class="detail-img">`
+          : `<p class="no-image">No image available. Contact us <a href="mailto:placeholder@email.com">here</a> to contribute an image.</p>`;
+
+        // Build prev/next buttons
+        let navButtons = '<div class="nav-buttons">';
+        if (id > 0) {
+          navButtons += `<a href="stereograph.html?id=${id - 1}">⬅ Previous</a>`;
+        } else {
+          navButtons += '<span></span>';
+        }
+        if (id < data.length - 1) {
+          navButtons += `<a href="stereograph.html?id=${id + 1}">Next ➡</a>`;
+        }
+        navButtons += '</div>';
+
+        document.getElementById("detail-container").innerHTML = `
+          ${imgHtml}
+          <h1>${item.title}</h1>
+          <p><strong>Publisher:</strong> ${item.publisher || "N/A"}</p>
+          <p><strong>Catalog #:</strong> ${item.catalog_number || "N/A"}</p>
+          <p><strong>Year:</strong> ${item.year || "Unknown"}</p>
+          <p><strong>Verso:</strong> ${item.verso || "None available"}</p>
+          <br><a href="archive.html">⬅ Back to Archive</a>
+          ${navButtons}
+        `;
+      } catch (error) {
+        console.error("Error loading detail:", error);
+        document.getElementById("detail-container").innerHTML = "<p>Error loading stereograph data.</p>";
+      }
+    }
+
+    loadDetail();
+  </script>
+</body>
+</html>

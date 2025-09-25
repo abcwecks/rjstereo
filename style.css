@@ -1,0 +1,219 @@
+/* Fonts & Base */
+body {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  background-color: #ffffff;
+  color: #333;
+}
+
+/* Header */
+.site-header {
+  text-align: center;
+  padding: 2rem 1rem;
+  background-color: #bfb9ae;
+}
+
+.site-header h1 {
+  margin: 0;
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 2.5rem;
+  color: #567794;
+}
+
+.site-header h2 {
+  margin: 0;
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* Cards */
+.card {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+}
+
+.card img {
+  width: 110%;              /* ensures left/right transforms visibly cut off edges */
+  max-width: none;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(60%);
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.card .overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  text-align: center;
+  max-width: 80%;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  background-color: rgba(86, 119, 148, 0.6);
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.card.left img {
+  transform: translateX(-10%);
+}
+
+.card.right img {
+  transform: translateX(10%);
+}
+
+.card:hover img {
+  transform: translateX(0);
+  filter: brightness(80%);
+}
+
+/* Links & Buttons */
+a {
+  color: #fff;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: #bfb9ae;
+}
+
+input[type="text"] {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 3px;
+  margin-right: 0.5rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #567794;
+  color: white;
+  font-weight: bold;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #bfb9ae;
+  color: #333;
+}
+
+/* Navigation Bar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #567794;
+  padding: 0.75rem 2rem;  /* reduced top/bottom padding so bar touches top */
+}
+
+.nav-title a {
+  color: white;
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-decoration: none;
+  line-height: 1.3;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
+  display: inline-block;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 6px 8px;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  text-decoration: underline;
+}
+
+/* Nav Search */
+.nav-search input[type="text"] {
+  padding: 0.3rem 0.5rem;
+  border: none;
+  border-radius: 3px;
+}
+
+/* About Page */
+.about-content {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.about-content p {
+  margin-bottom: 1.5rem;
+}
+
+.button {
+  display: inline-block;
+  margin: 1.5rem 0;
+  padding: 0.75rem 1.5rem;
+  background-color: #567794;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #bfb9ae;
+  color: #333;
+}
+
+/* --- Center the main content but keep text left-aligned --- */
+.content {
+  max-width: 920px;
+  margin: 40px auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+/* --- Publisher headings + inline stereograph link --- */
+.publisher-title {
+  color: #567794;
+  margin-top: 1.1em;
+  margin-bottom: 0.4em;
+}
+
+a.stereograph-link {
+  color: #567794;
+  text-decoration: underline;
+}
+
+/* Special style just for email link in About page */
+a.email-link {
+  color: #567794;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+a.email-link:hover {
+  color: #bfb9ae;
+}

@@ -4,92 +4,58 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Russo-Japanese War Stereograph Archive</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f8f8f8;
-      color: #333;
-      line-height: 1.6;
-    }
-    header {
-      background: #222;
-      color: #fff;
-      padding: 1em;
-      text-align: center;
-    }
-    nav {
-      background: #444;
-      padding: 0.5em;
-      text-align: center;
-    }
-    nav a {
-      color: #fff;
-      margin: 0 1em;
-      text-decoration: none;
-    }
-    nav a:hover {
-      text-decoration: underline;
-    }
-    main {
-      max-width: 800px;
-      margin: 2em auto;
-      padding: 0 1em;
-      background: #fff;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    h1, h2 {
-      text-align: center;
-    }
-    .entry {
-      border-bottom: 1px solid #ccc;
-      padding: 1em 0;
-    }
-    .metadata {
-      font-size: 0.9em;
-      color: #555;
-    }
-    footer {
-      text-align: center;
-      padding: 1em;
-      font-size: 0.8em;
-      background: #222;
-      color: #fff;
-      margin-top: 2em;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;700&family=Open+Sans&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <h1>Russo-Japanese War Stereograph Archive</h1>
-  </header>
-
-  <nav>
-    <a href="#">Home</a>
-    <a href="#">Browse</a>
-    <a href="#">About</a>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-title">
+      <a href="index.html">Russo-Japanese War<br>Stereograph Archive</a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="archive.html">ARCHIVE</a></li>
+      <li><a href="publishers.html">PUBLISHERS</a></li>
+      <li><a href="about.html">ABOUT</a></li>
+      <li>
+        <form action="archive.html" method="get" class="nav-search">
+          <input type="text" placeholder="SEARCH…" name="q">
+        </form>
+      </li>
+    </ul>
   </nav>
 
-  <main>
-    <h2>Featured Stereograph</h2>
-    <div class="entry">
-      <p><strong>Title/Caption:</strong> Japanese soldiers advancing under fire</p>
-      <p class="metadata">
-        <strong>Publisher:</strong> Example Publisher <br>
-        <strong>Date:</strong> 1904 <br>
-        <strong>Collection:</strong> Example Archive
-      </p>
-      <p>
-        <a href="https://example.com/stereograph-image" target="_blank">View Image (External Link)</a>
-      </p>
-    </div>
-  </main>
 
-  <footer>
-    &copy; 2025 Russo-Japanese War Stereograph Archive. All rights reserved.
-  </footer>
+  <main>
+    <section class="card left">
+      <img src="filler stereograph.jpg" alt="Stereograph placeholder">
+      <div class="overlay">
+        <p>
+          Welcome to the Russo-Japanese War Stereograph Archive — a repository of over 400 stereographs taken between 1904 and 1906.  
+          <br><br>
+          <a href="about.html">Click here for more information about the project…</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="card right">
+      <img src="index2.jpg" alt="Stereograph placeholder">
+      <div class="overlay">
+        <p>Search titles and verso texts in the archive:</p>
+        <form action="archive.html" method="get">
+          <input type="text" placeholder="Search the archive…" name="q">
+          <button type="submit">Search</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="card left">
+      <img src="index3.jpg" alt="Stereograph placeholder">
+      <div class="overlay">
+        <p><a href="publishers.html">Learn more about the publishers…</a></p>
+      </div>
+    </section>
+  </main>
 </body>
 </html>
-̧̧̧̧̧̧ ̑

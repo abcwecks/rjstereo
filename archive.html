@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Archive | Russo-Japanese War Stereograph Archive</title>
+
+  <!-- main site stylesheet (kept) -->
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;700&family=Open+Sans&display=swap" rel="stylesheet">
+
+  <!-- inline styles to ensure navbar is visible and consistent -->
+  <style>
+    :root {
+      --blue: #567794;
+      --sand: #bfb9ae;
+    }
+    body { font-family: 'Open Sans', sans-serif; margin: 0; background:#f9f9f9; color:#222; }
+    /* NAVBAR (matches About/stereograph look) */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--blue);
+      padding: 1rem 1.25rem;
+      color: white;
+    }
+    .nav-title a {
+      color: white;
+      font-family: 'Lato', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-decoration: none;
+      line-height: 1.15;
+    }
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+      margin: 0;
+      padding: 0;
+      align-items: center;
+    }
+    .nav-links li { display: inline-block; }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-family: 'Lato', sans-serif;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+    .nav-links a.active { text-decoration: underline; }
+    .nav-search input[type="text"] {
+      padding: 0.35rem 0.5rem;
+      border: none;
+      border-radius: 3px;
+      font-size: 0.9rem;
+    }
+
+    /* page header + hero search (keeps your large search) */
+    header { text-align:center; margin:1rem 0; }
+    header h1 { color:var(--blue); margin:0; font-size:1.6rem; font-family:'Lato',sans-serif; }
+    #search-wrap { text-align:center; margin: 0.8rem 0 1.2rem; }
+    #search { width: 90%; max-width:600px; padding:0.6rem 0.8rem; border-radius:6px; border:1px solid #ccc; font-size:1rem; }
+
+    /* list and card styles */
+    #stereograph-list { display:block; max-width:960px; margin: 0 auto 3rem; padding: 0 1rem; }
+    .stereograph-entry { background:#fff; border-radius:6px; padding:1rem; margin:0.75rem 0; box-shadow:0 2px 6px rgba(0,0,0,0.06); }
+    .stereograph-entry h3 { margin:0 0 0.375rem 0; font-size:1.05rem; }
+    .meta { color:#555; font-size:0.95rem; margin:0.25rem 0; }
+    .stereograph-entry img { max-width:100%; margin-top:0.6rem; border-radius:4px; border:1px solid #e6e6e6; }
+    .no-results { text-align:center; color:#666; padding:1rem; }
+    a.detail-link { color:var(--blue); text-decoration:none; font-weight:600; }
+    a.detail-link:hover { text-decoration:underline; }
+    mark { background: #fff3b0; } /* subtle highlight */
+    @media (max-width:520px){ #search{width:94%} }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR (same structure as your other pages) -->
+  <nav class="navbar">
+    <div class="nav-title">
+      <a href="index.html">Russo-Japanese War<br>Stereograph Archive</a>
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="archive.html" class="active">ARCHIVE</a></li>
+      <li><a href="publishers.html">PUBLISHERS</a></li>
+      <li><a href="about.html">ABOUT</a></li>
+      <li>
+        <!-- nav-search uses name="q" so we can read it; id used for JS access -->
+        <form id="nav-search-form" class="nav-search" role="search">
+          <input type="text" name="q" placeholder="SEARCH…" aria-label="Search site">
+        </form>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Page header + big search -->
+  <header>
+    <div id="search-wrap">
+      <input id="search" type="search" placeholder="Search title, publisher, catalog #, year, or verso…" autocomplete="off" />
+    </div>
+  </header>
+
+  <main>
+    <div id="stereograph-list" aria-live="polite"></div>
+  </main>
+
+  <script>
+  // escape helper
+  function escapeHtml(s){
+    return String(s === undefined || s === null ? '' : s)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#39;');
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const listEl = document.getElementById('stereograph-list');
+    const searchInput = document.getElementById('search');
+    const navSearchForm = document.getElementById('nav-search-form');
+
+    // safely attach nav-search submit handler (redirects to archive?q=...)
+    if (navSearchForm) {
+      navSearchForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const qEl = navSearchForm.querySelector('input[name="q"]');
+        const qv = (qEl && qEl.value || '').trim();
+        if (qv) {
+          window.location.href = 'archive.html?q=' + encodeURIComponent(qv);
+        }
+      });
+    }
+
+    // main async loader
+    (async function loadAndRender(){
+      try {
+        const res = await fetch('stereographs.json');
+        if (!res.ok) throw new Error('Failed to fetch stereographs.json: ' + res.status);
+        const data = await res.json();
+
+        const items = (Array.isArray(data) ? data : []).map((it, idx) => {
+          const publisher = it.publisher ?? '';
+          const catalog_number = it.catalog_number ?? '';
+          const year = it.year ?? '';
+          const title = it.title ?? '';
+          const verso = it.verso ?? '';
+          const image = it.image ?? '';
+
+          const searchParts = [
+            title, publisher, String(catalog_number), String(year), verso
+          ].map(x => (x === null || x === undefined) ? '' : String(x).toLowerCase());
+
+          return {
+            _idx: idx,
+            title, publisher, catalog_number, year, verso, image,
+            _search: searchParts.join(' ')
+          };
+        });
+
+        window.__stereographs = items;
+        console.log('Loaded stereographs:', items.length);
+
+        // If query parameter present, use it to prefill and filter
+        const params = new URLSearchParams(window.location.search);
+        const qParam = params.get('q');
+        if (qParam) {
+          searchInput.value = qParam;
+          const qLower = qParam.toLowerCase();
+          const filtered = items.filter(it => it._search.includes(qLower));
+          renderList(filtered, qLower);
+        } else {
+          renderList(items);
+        }
+
+        // search input event (live filter)
+        searchInput.addEventListener('input', function (ev) {
+          const query = (ev.target.value || '').trim().toLowerCase();
+          if (!query) {
+            renderList(items);
+            return;
+          }
+          const filtered = items.filter(it => it._search.includes(query));
+          renderList(filtered, query);
+        });
+
+      } catch (err) {
+        console.error('Error loading data:', err);
+        listEl.innerHTML = '<div class="no-results">Error loading data — check console for details.</div>';
+      }
+    })();
+
+    // render function
+    function renderList(itemsToRender, query = '') {
+      listEl.innerHTML = '';
+      if (!itemsToRender || itemsToRender.length === 0) {
+        listEl.innerHTML = '<div class="no-results">No results found.</div>';
+        return;
+      }
+
+      const frag = document.createDocumentFragment();
+      itemsToRender.forEach(it => {
+        const div = document.createElement('div');
+        div.className = 'stereograph-entry';
+        const detailHref = 'stereograph.html?id=' + encodeURIComponent(it._idx);
+
+        let displayedTitle = escapeHtml(it.title);
+        if (query) {
+          try {
+            const qEsc = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const re = new RegExp(qEsc, 'ig');
+            displayedTitle = displayedTitle.replace(re, match => '<mark>' + escapeHtml(match) + '</mark>');
+          } catch (e) {}
+        }
+
+        div.innerHTML = `
+          <h3><a class="detail-link" href="${detailHref}">${displayedTitle}</a></h3>
+          <p class="meta"><strong>Publisher:</strong> ${escapeHtml(it.publisher || 'N/A')}</p>
+          <p class="meta"><strong>Catalog #:</strong> ${escapeHtml(it.catalog_number || 'N/A')}</p>
+          <p class="meta"><strong>Year:</strong> ${escapeHtml(it.year || 'Unknown')}</p>
+          <p class="meta"><strong>Verso:</strong> ${escapeHtml(it.verso || 'None available')}</p>
+          ${it.image ? `<div><img src="${escapeHtml(it.image)}" alt="${escapeHtml(it.title)}"></div>` : ''}
+        `;
+        frag.appendChild(div);
+      });
+      listEl.appendChild(frag);
+    }
+
+  }); // DOMContentLoaded
+  </script>
+</body>
+</html>
